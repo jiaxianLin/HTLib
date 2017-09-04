@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- list -->
+    <item name="base_list" type="id"/>
+    <item name="base_refreshlayout" type="id"/>
+
+    <!-- fragment -->
+    <item name="base_fragment_container" type="id"/>
+
+    <!-- tab -->
+    <item name="base_tab" type="id"/>
+    <item name="tab_vp" type="id"/>
+
+
+</resources>

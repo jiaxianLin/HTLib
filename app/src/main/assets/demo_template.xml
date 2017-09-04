@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<view>
+    <section name="第一节点"
+             label="setion1">
+
+        <input name="username"
+               label="用户名"/>
+
+        <input name="password"
+               label="密码"/>
+
+        <input name="content"
+               label="内容"/>
+
+    </section>
+</view>
