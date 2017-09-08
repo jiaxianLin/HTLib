@@ -1,7 +1,7 @@
-package com.ht.htlibrary.base;
+package com.ht.htlibrary.net;
 
 /**
- * Created by Administrator on 2017/8/28 0028.
+ * Created by rinkousen on 2017/8/28 0028.
  */
 
 public class BaseResponse<T> {

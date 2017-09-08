@@ -10,6 +10,7 @@ import com.chad.library.adapter.base.loadmore.LoadMoreView;
 import com.ht.htlibrary.R;
 import com.ht.htlibrary.ui.adapter.load.IOKLoad;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +20,6 @@ import java.util.List;
 public abstract class BaseListActivity<T> extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener,
 		BaseQuickAdapter.RequestLoadMoreListener, IOKLoad {
 
-	protected List<T> mList;
-
 	protected RecyclerView mRecyclerView;
 
 	protected RecyclerView.LayoutManager manager;
@@ -29,27 +28,22 @@ public abstract class BaseListActivity<T> extends BaseActivity implements SwipeR
 
 	protected SwipeRefreshLayout mRefreshLayout;
 
-	/**
-	 * 必须最先声明
-	 * 在initParams里
-	 */
-	boolean isOpenRefresh;
-
-	/**
-	 * 必须最先声明
-	 * 在initParams里
-	 */
-	boolean isLoadMore;
-
 	protected LoadMoreView loadMoreView;
 
-	protected int mPageSize = 10;
-
-	public int getmPageSize() {
-		return mPageSize;
-	}
-
+	public static final int PAGE_SIZE = 10;
+	/**
+	 * 当前页数
+	 */
 	protected int page = 1;
+
+	/**
+	 * 加载更多还是刷新
+	 */
+	protected boolean isRefresing;
+	/**
+	 * 总数
+	 */
+	protected int total;
 
 	@Override
 	protected int getLayout() {
@@ -61,10 +55,9 @@ public abstract class BaseListActivity<T> extends BaseActivity implements SwipeR
 		super.initView();
 		mRecyclerView = (RecyclerView) findViewById(R.id.base_list);
 		mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.base_refreshlayout);
-		if (isOpenRefresh) {
+		if (isOpenRefresh()) {
 			mRefreshLayout.setOnRefreshListener(this);
 		}
-
 	}
 
 	@Override
@@ -74,13 +67,11 @@ public abstract class BaseListActivity<T> extends BaseActivity implements SwipeR
 			throw new RuntimeException("recyclerview.manager is null");
 		}
 
-		mList = getList(page, mPageSize);
-
-		mAdapter = new ListAdapter(getItemLayoutId(), mList);
+		mAdapter = new ListAdapter(getItemLayoutId(), new ArrayList<T>());
 		mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
 		mAdapter.setLoadMoreView(getLoadMoreView());
 
-		if (isLoadMore) {
+		if (isOpenLoadMore()) {
 			mAdapter.setOnLoadMoreListener(this, mRecyclerView);
 		}
 
@@ -105,21 +96,23 @@ public abstract class BaseListActivity<T> extends BaseActivity implements SwipeR
 		return 0;
 	}
 
-	public abstract List<T> getList(int page, int rp);
+	/**
+	 * 是否开启下拉刷新
+	 * @return
+	 */
+	protected abstract boolean isOpenRefresh();
+
+	/**
+	 * 是否开启上拉加载
+	 * @return
+	 */
+	protected abstract boolean isOpenLoadMore();
 
 	public abstract RecyclerView.LayoutManager getLayoutMananger();
 
 	protected abstract void MyHolder(BaseViewHolder baseViewHolder, T t);
 
 	protected abstract int getItemLayoutId();
-
-	public void setOpenRefresh(boolean openRefresh) {
-		isOpenRefresh = openRefresh;
-	}
-
-	public void setLoadMore(boolean loadMore) {
-		isLoadMore = loadMore;
-	}
 
 	public LoadMoreView getLoadMoreView() {
 		return loadMoreView == null ? new LoadMoreView() {
@@ -150,6 +143,8 @@ public abstract class BaseListActivity<T> extends BaseActivity implements SwipeR
 		page = 1;
 		mRefreshLayout.setRefreshing(false);
 		mAdapter.setEnableLoadMore(true);
+		mAdapter.notifyDataSetChanged();
+
 	}
 
 	@Override
@@ -161,8 +156,7 @@ public abstract class BaseListActivity<T> extends BaseActivity implements SwipeR
 		if (hasNext) {
 			mAdapter.loadMoreComplete();
 		} else {
-			//false为显示加载结束，true为不显示
-			mAdapter.loadMoreEnd(false);
+			mAdapter.loadMoreEnd();
 		}
 	}
 
@@ -197,4 +191,9 @@ public abstract class BaseListActivity<T> extends BaseActivity implements SwipeR
 			}
 		}, 500);
 	}
+
+	public void setTotal(int total) {
+		this.total = total;
+	}
+
 }

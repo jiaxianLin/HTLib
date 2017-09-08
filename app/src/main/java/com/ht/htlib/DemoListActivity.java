@@ -6,19 +6,25 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.ht.htlib.bean.ListData;
+import com.ht.htlib.contract.DemoListContract;
+import com.ht.htlib.di.component.DaggerDemoListPresenterCom;
+import com.ht.htlib.di.module.model.DemoListModelModule;
+import com.ht.htlib.di.module.view.DemoListViewModule;
+import com.ht.htlib.presenter.DemoListPresenter;
 import com.ht.htlibrary.ui.activity.BaseListActivity;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.inject.Inject;
 
 /**
- * Created by Administrator on 2017/8/14 0014.
+ * Created by rinkousen on 2017/8/14 0014.
+ * dagger2 + mvp + retrofit2 + rxjava + baserecycleAdapterHelper
  */
 
-public class DemoListActivity extends BaseListActivity<String> {
+public class DemoListActivity extends BaseListActivity<ListData.UserData> implements DemoListContract.View {
 
-	public static int TOTAL_COUNT = 30;
-	private boolean isErr;
+	@Inject
+	DemoListPresenter mPresenter;
 
 	@Override
 	public RecyclerView.LayoutManager getLayoutMananger() {
@@ -26,10 +32,11 @@ public class DemoListActivity extends BaseListActivity<String> {
 	}
 
 	@Override
-	protected void MyHolder(BaseViewHolder baseViewHolder, String s) {
+	protected void MyHolder(BaseViewHolder baseViewHolder, ListData.UserData userData) {
 //		baseViewHolder.setText(R.id.tv_demo, s);
 		TextView tv = baseViewHolder.getView(R.id.tv_demo);
-		tv.setText(s);
+//		tv.setText(s);
+		tv.setText(userData.getUserName());
 	}
 
 	@Override
@@ -39,70 +46,75 @@ public class DemoListActivity extends BaseListActivity<String> {
 
 	@Override
 	public void refresh() {
-
-		refreshOk();
+		isRefresing = true;
+		mPresenter.loadingData(PAGE_SIZE + "", "1");
 	}
 
 	@Override
 	protected void initParams(Bundle bundle) {
-		setOpenRefresh(true);
-		setLoadMore(true);
+
 	}
 
 	@Override
 	protected void initData() {
 		super.initData();
-
+		DaggerDemoListPresenterCom.builder()
+				.demoListModelModule(new DemoListModelModule())
+				.demoListViewModule(new DemoListViewModule(this))
+				.build()
+				.inject(this);
+		mPresenter.start();
+		//初始加载
+		mPresenter.loadingData(PAGE_SIZE + "", page + "");
 
 	}
 
 	@Override
-	public List<String> getList(int page, int rp) {
-		List<String> list = new ArrayList<>();
-		for (int i = 0; i < 10; i++) {
-			list.add("current：" + i);
-		}
-
-		return list;
+	protected boolean isOpenRefresh() {
+		return true;
 	}
 
 	@Override
-	public int getPage() {
-		return page;
-	}
-
-	@Override
-	public void setPage(int page) {
-
+	protected boolean isOpenLoadMore() {
+		return true;
 	}
 
 	@Override
 	public void onLoadMoreRequested() {
 		mRefreshLayout.setEnabled(false);
-		if (mAdapter.getData().size() < mPageSize) {
+		if (mAdapter.getData().size() < PAGE_SIZE) {
 			mAdapter.loadMoreEnd(true);
 		} else {
-			if (mAdapter.getData().size() >= TOTAL_COUNT) {
-//                    pullToRefreshAdapter.loadMoreEnd();//default visible
+			if (mAdapter.getData().size() >= total) {
 				mAdapter.loadMoreEnd(true);//true is gone,false is visible
 			} else {
-				if (isErr) {
-					List<String> list = new ArrayList<>();
-					for (int i = 0; i < 10; i++) {
-						list.add("current：" + page * mPageSize + i);
-					}
-					mAdapter.addData(list);
-//					mCurrentCounter = mAdapter.getData().size();
-					page ++;
-					mAdapter.loadMoreComplete();
-				} else {
-					isErr = true;
-//					Toast.makeText(this, R.string.network_err, Toast.LENGTH_LONG).show();
-					mAdapter.loadMoreFail();
+				isRefresing = false;
+				mPresenter.loadingData(PAGE_SIZE + "", (page+1) + "");
 
-				}
 			}
 			mRefreshLayout.setEnabled(true);
 		}
+	}
+
+	@Override
+	public void setPresenter(DemoListContract.Presenter presenter) {
+
+	}
+
+	@Override
+	public void showData(ListData data) {
+		try {
+			setTotal(Integer.valueOf(data.getTotal()));
+			if (isRefresing) {
+				refreshOk();
+				mAdapter.setNewData(data.getResult());
+			} else {
+				loadMoreOk(PAGE_SIZE * page <= Integer.valueOf(data.getTotal()) ? true : false);
+				mAdapter.addData(data.getResult());
+			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+
 	}
 }

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2017/9/4 0004.
+ * Created by rinkousen on 2017/9/4 0004.
  */
 
 public class TemplateConfig {

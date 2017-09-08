@@ -21,8 +21,4 @@ public interface IOKLoad {
 	 */
 	void loadMoreFailure();
 
-	int getPage();
-
-	void setPage(int page);
-
 }

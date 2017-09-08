@@ -8,7 +8,7 @@ import org.w3c.dom.Element;
 import java.lang.reflect.Field;
 
 /**
- * Created by Administrator on 2017/8/14 0014.
+ * Created by rinkousen on 2017/8/14 0014.
  * 描述：配置模板
  */
 
@@ -66,5 +66,10 @@ public class BaseTemplate {
 
 	public void setSectionTemplate(SectionTemplate sectionTemplate) {
 		this.sectionTemplate = sectionTemplate;
+	}
+
+	public boolean isShow(){
+
+		return false;
 	}
 }

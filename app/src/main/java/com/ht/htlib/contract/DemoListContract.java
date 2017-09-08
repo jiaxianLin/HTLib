@@ -1,24 +1,20 @@
 package com.ht.htlib.contract;
 
+import com.ht.htlib.bean.ListData;
 import com.ht.htlibrary.base.BasePresenter;
 import com.ht.htlibrary.base.BaseView;
 
 /**
- * Created by Administrator on 2017/9/1 0001.
+ * Created by Administrator on 2017/9/7 0007.
  */
 
-public interface LoginContract {
+public class DemoListContract {
 
 	public interface Presenter extends BasePresenter {
-
-		void login(String username, String password);
-
+		void loadingData(String rp, String page);
 	}
 
 	public interface View extends BaseView<Presenter> {
-
-		void showProgress();
-
-		void dismissProgress();
+		void showData(ListData data);
 	}
 }

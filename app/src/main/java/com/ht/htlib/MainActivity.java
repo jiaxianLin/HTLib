@@ -4,13 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SeekBar;
 
 import com.ht.htlib.template.DemoTemplateActivity;
 import com.ht.htlibrary.ui.activity.BaseActivity;
+import com.ht.htlibrary.util.BarUtils;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 	Button btn_list, btn_fragment, btn_tab, btn_template;
+
+	SeekBar mSeekBar;
 
 //	private ActivityComponent mActivityComponent;
 //	@Inject
@@ -48,6 +52,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //		((TextView) findViewById(R.id.tv_main)).
 //				setText("ID:" + mUserModel.getId() + " Name: " + mUserModel.getName()
 //						+ "  Gender: " + mUserModel.getGender());
+
+		mSeekBar = (SeekBar) findViewById(R.id.seekbar);
+
+		mSeekBar.setMax(255);
+		mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				BarUtils.setStatusBarAlpha(MainActivity.this, progress);
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+
+			}
+		});
 
 
 	}

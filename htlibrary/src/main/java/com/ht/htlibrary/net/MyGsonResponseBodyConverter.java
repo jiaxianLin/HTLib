@@ -1,7 +1,6 @@
 package com.ht.htlibrary.net;
 
 import com.google.gson.Gson;
-import com.ht.htlibrary.base.BaseResponse;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -26,7 +25,7 @@ final class MyGsonResponseBodyConverter<T> implements Converter<ResponseBody, T>
     public T convert(ResponseBody value) throws IOException {
         String response = value.string();
         BaseResponse baseResponse = gson.fromJson(response, BaseResponse.class);
-        if(NetClient.init().getSuccessCode().equals(baseResponse.getCode())){
+        if(NetClient.SUCCESS_CODE.equals(baseResponse.getCode())){
             return gson.fromJson(response, type);
         } else {
             throw new ResultException(baseResponse.getCode(), baseResponse.getMsg());

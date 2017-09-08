@@ -15,7 +15,7 @@ import com.ht.htlibrary.template.bean.TemplateList;
 
 public abstract class BaseTempLateActivity extends BaseActivity {
 
-	TemplateAdapter mAdapter;
+	protected TemplateAdapter mAdapter;
 
 	RecyclerView mRecyclerView;
 
@@ -44,7 +44,6 @@ public abstract class BaseTempLateActivity extends BaseActivity {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
-
 
 		mRecyclerView.setAdapter(mAdapter);
 
