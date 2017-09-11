@@ -1,10 +1,11 @@
 package com.ht.htlib;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 
+import com.flyco.tablayout.listener.CustomTabEntity;
 import com.ht.htlibrary.ui.activity.BaseTabActivity;
 import com.ht.htlibrary.ui.fragment.BaseFragment;
+import com.ht.htlibrary.ui.tab.TabEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +25,10 @@ public class DemoTabActivity extends BaseTabActivity {
 	}
 
 	@Override
-	public List<TabLayout.Tab> getTabs() {
-		List<TabLayout.Tab> list = new ArrayList<>();
+	public ArrayList<CustomTabEntity> getTabs() {
+		ArrayList<CustomTabEntity> list = new ArrayList<>();
 		for (String s : arr) {
-			TabLayout.Tab tab = mTabLayout.newTab();
-			tab.setText(s);
+			TabEntity tab = new TabEntity(s, R.mipmap.ic_launcher, R.mipmap.ic_launcher);
 			list.add(tab);
 		}
 		return list;

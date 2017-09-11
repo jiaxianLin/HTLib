@@ -52,7 +52,7 @@ public abstract class BaseActivity extends SupportActivity {
 
 	protected abstract int getToolBarId();
 
-	//statusbar , actionbar , toast,
+	//statusbar , toast,
 	protected void setStatusBarColor(int color) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			getWindow().setStatusBarColor(color);

@@ -1,24 +1,27 @@
 package com.ht.htlibrary.ui.activity;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 
+import com.flyco.tablayout.CommonTabLayout;
+import com.flyco.tablayout.listener.CustomTabEntity;
+import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.ht.htlibrary.R;
 import com.ht.htlibrary.ui.adapter.TabAdapter;
 import com.ht.htlibrary.ui.fragment.BaseFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Administrator on 2017/8/24 0024.
  */
 
-public abstract class BaseTabActivity extends BaseActivity implements TabLayout.OnTabSelectedListener {
+public abstract class BaseTabActivity extends BaseActivity implements OnTabSelectListener, ViewPager.OnPageChangeListener {
 
-	protected TabLayout mTabLayout;
+	protected CommonTabLayout mTabLayout;
 
-	List<TabLayout.Tab> mTabs;
+	ArrayList<CustomTabEntity> mTabs;
 
 	ViewPager mViewPager;
 
@@ -39,20 +42,19 @@ public abstract class BaseTabActivity extends BaseActivity implements TabLayout.
 	@Override
 	protected void initView() {
 		super.initView();
-		mTabLayout = (TabLayout) findViewById(R.id.base_tab);
+		mTabLayout = (CommonTabLayout) findViewById(R.id.base_tab);
 		mViewPager = (ViewPager) findViewById(R.id.tab_vp);
 		mTabs = getTabs();
-		mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-		mTabLayout.addOnTabSelectedListener(this);
-
-
+		mFragments = getFragments();
 	}
 
 	@Override
 	protected void initData() {
-		mTabAdapter = new TabAdapter(getSupportFragmentManager(), getFragments(), getTabs());
+		mTabAdapter = new TabAdapter(getSupportFragmentManager(), mFragments, mTabs);
 		mViewPager.setAdapter(mTabAdapter);
-		mTabLayout.setupWithViewPager(mViewPager);
+		mTabLayout.setTabData(mTabs);
+		mTabLayout.setOnTabSelectListener(this);
+		mViewPager.addOnPageChangeListener(this);
 	}
 
 	@Override
@@ -64,22 +66,33 @@ public abstract class BaseTabActivity extends BaseActivity implements TabLayout.
 	 * 动态获取标签
 	 * @return
 	 */
-	public abstract List<TabLayout.Tab> getTabs();
-
-	@Override
-	public void onTabSelected(TabLayout.Tab tab) {
-
-	}
-
-	@Override
-	public void onTabUnselected(TabLayout.Tab tab) {
-
-	}
-
-	@Override
-	public void onTabReselected(TabLayout.Tab tab) {
-
-	}
+	public abstract ArrayList<CustomTabEntity> getTabs();
 
 	public abstract List<BaseFragment> getFragments();
+
+	@Override
+	public void onTabSelect(int position) {
+		mViewPager.setCurrentItem(position);
+	}
+
+	@Override
+	public void onTabReselect(int position) {
+
+	}
+
+	@Override
+	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+	}
+
+	@Override
+	public void onPageSelected(int position) {
+		mTabLayout.setCurrentTab(position);
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int state) {
+
+	}
+
 }

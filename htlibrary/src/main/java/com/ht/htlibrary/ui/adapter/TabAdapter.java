@@ -1,10 +1,10 @@
 package com.ht.htlibrary.ui.adapter;
 
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.flyco.tablayout.listener.CustomTabEntity;
 import com.ht.htlibrary.ui.fragment.BaseFragment;
 
 import java.util.List;
@@ -17,9 +17,9 @@ public class TabAdapter extends FragmentStatePagerAdapter {
 
 	List<BaseFragment> mFragments;
 
-	List<TabLayout.Tab> mTabs;
+	List<CustomTabEntity> mTabs;
 
-	public TabAdapter(FragmentManager fm, List<BaseFragment> fragments, List<TabLayout.Tab> tabs) {
+	public TabAdapter(FragmentManager fm, List<BaseFragment> fragments, List<CustomTabEntity> tabs) {
 		super(fm);
 		mFragments = fragments;
 		mTabs = tabs;
@@ -37,6 +37,6 @@ public class TabAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public CharSequence getPageTitle(int position) {
-		return mTabs.get(position).getText().toString();
+		return mTabs.get(position).getTabTitle();
 	}
 }
