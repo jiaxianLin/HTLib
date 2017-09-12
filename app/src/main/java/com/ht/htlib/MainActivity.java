@@ -91,7 +91,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 		Intent intent = new Intent();
 		switch (v.getId()){
 			case R.id.btn_list:
-				intent.setClass(this, DemoListActivity.class);
+				intent.setClass(this, DemoMultiListActivity.class);
 				break;
 			case R.id.btn_fragment:
 				intent.setClass(this, DemoFragmentAtivity.class);

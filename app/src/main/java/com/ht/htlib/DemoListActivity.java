@@ -13,6 +13,7 @@ import com.ht.htlib.di.module.model.DemoListModelModule;
 import com.ht.htlib.di.module.view.DemoListViewModule;
 import com.ht.htlib.presenter.DemoListPresenter;
 import com.ht.htlibrary.ui.activity.BaseListActivity;
+import com.ht.htlibrary.ui.adapter.ILayoutLoad;
 
 import javax.inject.Inject;
 
@@ -29,19 +30,6 @@ public class DemoListActivity extends BaseListActivity<ListData.UserData> implem
 	@Override
 	public RecyclerView.LayoutManager getLayoutMananger() {
 		return new LinearLayoutManager(this);
-	}
-
-	@Override
-	protected void MyHolder(BaseViewHolder baseViewHolder, ListData.UserData userData) {
-//		baseViewHolder.setText(R.id.tv_demo, s);
-		TextView tv = baseViewHolder.getView(R.id.tv_demo);
-//		tv.setText(s);
-		tv.setText(userData.getUserName());
-	}
-
-	@Override
-	protected int getItemLayoutId() {
-		return R.layout.item_demo_list;
 	}
 
 	@Override
@@ -67,6 +55,22 @@ public class DemoListActivity extends BaseListActivity<ListData.UserData> implem
 		//初始加载
 		mPresenter.loadingData(PAGE_SIZE + "", page + "");
 
+	}
+
+	@Override
+	protected ListAdapter getAdapter() {
+		return new ListAdapter(R.layout.item_demo_list, new ILayoutLoad<ListData.UserData, BaseViewHolder>() {
+			@Override
+			public void doInConstructor() {
+
+			}
+
+			@Override
+			public void doInConvert(BaseViewHolder baseViewHolder, ListData.UserData data) {
+				TextView tv = baseViewHolder.getView(R.id.tv_demo);
+				tv.setText(data.getUserName());
+			}
+		});
 	}
 
 	@Override

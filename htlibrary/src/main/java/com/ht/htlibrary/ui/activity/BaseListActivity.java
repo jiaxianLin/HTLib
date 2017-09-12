@@ -8,10 +8,10 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.loadmore.LoadMoreView;
 import com.ht.htlibrary.R;
+import com.ht.htlibrary.ui.adapter.ILayoutLoad;
 import com.ht.htlibrary.ui.adapter.load.IOKLoad;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Administrator on 2017/8/10 0010.
@@ -24,7 +24,7 @@ public abstract class BaseListActivity<T> extends BaseActivity implements SwipeR
 
 	protected RecyclerView.LayoutManager manager;
 
-	protected ListAdapter mAdapter;
+	protected BaseQuickAdapter<T, BaseViewHolder> mAdapter;
 
 	protected SwipeRefreshLayout mRefreshLayout;
 
@@ -62,12 +62,8 @@ public abstract class BaseListActivity<T> extends BaseActivity implements SwipeR
 
 	@Override
 	protected void initData() {
-		manager = getLayoutMananger();
-		if (manager == null) {
-			throw new RuntimeException("recyclerview.manager is null");
-		}
 
-		mAdapter = new ListAdapter(getItemLayoutId(), new ArrayList<T>());
+		mAdapter = getAdapter();
 		mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
 		mAdapter.setLoadMoreView(getLoadMoreView());
 
@@ -75,19 +71,31 @@ public abstract class BaseListActivity<T> extends BaseActivity implements SwipeR
 			mAdapter.setOnLoadMoreListener(this, mRecyclerView);
 		}
 
+		manager = getLayoutMananger();
+		if (manager == null) {
+			throw new RuntimeException("recyclerview.manager is null");
+		}
+
 		mRecyclerView.setLayoutManager(manager);
 		mRecyclerView.setAdapter(mAdapter);
 	}
 
+	protected abstract BaseQuickAdapter<T, BaseViewHolder> getAdapter();
+
 	protected class ListAdapter extends BaseQuickAdapter<T, BaseViewHolder> {
 
-		public ListAdapter(int layoutResId, List<T> data) {
-			super(layoutResId, data);
+		ILayoutLoad<T, BaseViewHolder> load;
+
+		public ListAdapter(int layoutResId, ILayoutLoad<T, BaseViewHolder> load) {
+			super(layoutResId, new ArrayList<T>());
+			this.load = load;
 		}
 
 		@Override
 		protected void convert(BaseViewHolder baseViewHolder, T t) {
-			MyHolder(baseViewHolder, t);
+			if(load != null){
+				load.doInConvert(baseViewHolder, t);
+			}
 		}
 	}
 
@@ -109,10 +117,6 @@ public abstract class BaseListActivity<T> extends BaseActivity implements SwipeR
 	protected abstract boolean isOpenLoadMore();
 
 	public abstract RecyclerView.LayoutManager getLayoutMananger();
-
-	protected abstract void MyHolder(BaseViewHolder baseViewHolder, T t);
-
-	protected abstract int getItemLayoutId();
 
 	public LoadMoreView getLoadMoreView() {
 		return loadMoreView == null ? new LoadMoreView() {
