@@ -8,9 +8,10 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.loadmore.LoadMoreView;
 import com.ht.htlibrary.R;
+import com.ht.htlibrary.ui.adapter.ILayoutLoad;
 import com.ht.htlibrary.ui.adapter.load.IOKLoad;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2017/8/24 0024.
@@ -18,63 +19,31 @@ import java.util.List;
 
 public abstract class BaseListFragment<T> extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.RequestLoadMoreListener, IOKLoad {
 
-	protected List<T> mList;
-
 	RecyclerView mRecyclerView;
 
 	protected RecyclerView.LayoutManager manager;
 
-	protected ListAdapter mAdapter;
+	protected BaseQuickAdapter<T, BaseViewHolder> mAdapter;
 
 	protected SwipeRefreshLayout mRefreshLayout;
 
-	LoadMoreView mLoadMoreView;
+	public static final int PAGE_SIZE = 10;
 
 	/**
-	 * 必须最先声明
-	 * 在initParams里
+	 * 当前页数
 	 */
-	boolean isOpenRefresh;
+	protected int page = 1;
 
 	/**
-	 * 必须最先声明
-	 * 在initParams里
+	 * 加载更多还是刷新
 	 */
-	boolean isLoadMore;
+	protected boolean isRefresing;
+	/**
+	 * 总数
+	 */
+	protected int total;
 
 	protected LoadMoreView loadMoreView;
-	private int page;
-	private int mPageSize = 10;
-
-	@Override
-	protected void initData() {
-		manager = getLayoutMananger();
-		if (manager == null) {
-			throw new RuntimeException("recyclerview.manager is null");
-		}
-
-		mList = getList(page, mPageSize);
-
-		mAdapter = new ListAdapter(getItemLayoutId(), mList);
-		mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
-		mAdapter.setLoadMoreView(getLoadMoreView());
-
-		if (isLoadMore) {
-			mAdapter.setOnLoadMoreListener(this, mRecyclerView);
-		}
-
-		mRecyclerView.setLayoutManager(manager);
-		mRecyclerView.setAdapter(mAdapter);
-	}
-
-	@Override
-	protected void initView(View view) {
-		mRecyclerView = (RecyclerView) view.findViewById(R.id.base_list);
-		mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.base_refreshlayout);
-		if (isOpenRefresh) {
-			mRefreshLayout.setOnRefreshListener(this);
-		}
-	}
 
 	@Override
 	protected int getLayout() {
@@ -82,44 +51,76 @@ public abstract class BaseListFragment<T> extends BaseFragment implements SwipeR
 	}
 
 	@Override
-	public void onRefresh() {
-		page = 1;
-		mRefreshLayout.setRefreshing(false);
-		mAdapter.setEnableLoadMore(true);
+	protected void initView(View view) {
+		mRecyclerView = (RecyclerView) view.findViewById(R.id.base_list);
+		mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.base_refreshlayout);
+		if (isOpenRefresh()) {
+			mRefreshLayout.setOnRefreshListener(this);
+		}
 	}
 
 	@Override
-	public void onLoadMoreRequested() {
+	protected void initData() {
 
+		mAdapter = getAdapter();
+		mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
+		mAdapter.setLoadMoreView(getLoadMoreView());
+
+		if (isOpenLoadMore()) {
+			mAdapter.setOnLoadMoreListener(this, mRecyclerView);
+		}
+
+		manager = getLayoutMananger();
+
+		if (manager == null) {
+			throw new RuntimeException("recyclerview.manager is null");
+		}
+
+		mRecyclerView.setLayoutManager(manager);
+		mRecyclerView.setAdapter(mAdapter);
 	}
+
+	@Override
+	public void onRefresh() {
+		mAdapter.setEnableLoadMore(false);
+		refresh();
+	}
+
+	protected abstract BaseQuickAdapter<T, BaseViewHolder> getAdapter();
 
 	protected class ListAdapter extends BaseQuickAdapter<T, BaseViewHolder> {
 
-		public ListAdapter(int layoutResId, List<T> data) {
-			super(layoutResId, data);
+		ILayoutLoad<T, BaseViewHolder> load;
+
+
+		public ListAdapter(int layoutResId, ILayoutLoad<T, BaseViewHolder> load) {
+			super(layoutResId, new ArrayList<T>());
+			this.load = load;
 		}
 
 		@Override
 		protected void convert(BaseViewHolder baseViewHolder, T t) {
-			MyHolder(baseViewHolder, t);
+			if(load != null){
+				load.doInConvert(baseViewHolder, t);
+			}
 		}
 	}
 
-	public abstract List<T> getList(int page, int rp);
+	/**
+	 * 是否开启下拉刷新
+	 *
+	 * @return
+	 */
+	protected abstract boolean isOpenRefresh();
+
+	/**
+	 * 是否开启上拉加载
+	 *
+	 * @return
+	 */
+	protected abstract boolean isOpenLoadMore();
 
 	public abstract RecyclerView.LayoutManager getLayoutMananger();
-
-	protected abstract void MyHolder(BaseViewHolder baseViewHolder, T t);
-
-	protected abstract int getItemLayoutId();
-
-	public void setOpenRefresh(boolean openRefresh) {
-		isOpenRefresh = openRefresh;
-	}
-
-	public void setLoadMore(boolean loadMore) {
-		isLoadMore = loadMore;
-	}
 
 	public LoadMoreView getLoadMoreView() {
 		return loadMoreView == null ? new LoadMoreView() {
@@ -155,6 +156,7 @@ public abstract class BaseListFragment<T> extends BaseFragment implements SwipeR
 		page = 1;
 		mRefreshLayout.setRefreshing(false);
 		mAdapter.setEnableLoadMore(true);
+		mAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -166,8 +168,7 @@ public abstract class BaseListFragment<T> extends BaseFragment implements SwipeR
 		if (hasNext) {
 			mAdapter.loadMoreComplete();
 		} else {
-			//false为显示加载结束，true为不显示
-			mAdapter.loadMoreEnd(false);
+			mAdapter.loadMoreEnd();
 		}
 	}
 
@@ -175,5 +176,9 @@ public abstract class BaseListFragment<T> extends BaseFragment implements SwipeR
 	public void loadMoreFailure() {
 		mRefreshLayout.setEnabled(true);
 		mAdapter.loadMoreFail();
+	}
+
+	public void setTotal(int total) {
+		this.total = total;
 	}
 }
