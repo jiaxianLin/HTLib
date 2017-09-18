@@ -21,13 +21,13 @@ public abstract class BaseTabActivity extends BaseActivity implements OnTabSelec
 
 	protected CommonTabLayout mTabLayout;
 
-	ArrayList<CustomTabEntity> mTabs;
+	protected ArrayList<CustomTabEntity> mTabs;
 
-	ViewPager mViewPager;
+	protected ViewPager mViewPager;
 
-	List<BaseFragment> mFragments;
+	protected List<BaseFragment> mFragments;
 
-	TabAdapter mTabAdapter;
+	protected TabAdapter mTabAdapter;
 
 	@Override
 	protected void initParams(Bundle bundle) {
