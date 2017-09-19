@@ -46,6 +46,11 @@ public class BaseWebActivity extends BaseActivity {
 		return 0;
 	}
 
+	@Override
+	protected void doOnNext(Object o) {
+
+	}
+
 	private boolean isUrl(final String url) {
 		boolean urlFlag = false;
 

@@ -10,8 +10,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.ht.htlibrary.base.RxBus;
+
 import es.dmoral.toasty.Toasty;
 import me.yokeyword.fragmentation.SupportActivity;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/8/10 0010.
@@ -23,11 +29,15 @@ public abstract class BaseActivity extends SupportActivity {
 
 	private Toast mToast;
 
+	protected Subscription subscription;
+
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Bundle bundle = getIntent().getExtras();
 		initParams(bundle);
+		initRxBus();
 		if(getLayout() == 0){
 			throw new RuntimeException("layoutResID == -1 have u create your layout?");
 		}
@@ -51,6 +61,21 @@ public abstract class BaseActivity extends SupportActivity {
 	protected abstract void initData();
 
 	protected abstract int getToolBarId();
+
+	protected void initRxBus(){
+		subscription = RxBus.toObserverable()
+				.subscribeOn(Schedulers.io())
+				.unsubscribeOn(Schedulers.io())
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(new Action1<Object>() {
+					@Override
+					public void call(Object o) {
+						doOnNext(o);
+					}
+				});
+	}
+
+	protected abstract void doOnNext(Object o);
 
 	//statusbar , toast,
 	protected void setStatusBarColor(int color) {
@@ -118,9 +143,11 @@ public abstract class BaseActivity extends SupportActivity {
 	}
 
 
-
-
-
-
-
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if(subscription != null){
+			subscription.unsubscribe();
+		}
+	}
 }

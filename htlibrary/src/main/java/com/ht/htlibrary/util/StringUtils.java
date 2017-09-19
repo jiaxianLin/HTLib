@@ -187,4 +187,17 @@ public final class StringUtils {
         }
         return new String(chars);
     }
+
+    public static boolean isBoolean (String str){
+        return "true".equalsIgnoreCase(str) || "false".equalsIgnoreCase(str);
+    }
+
+    public static boolean isFloat(String str){
+        try {
+            Float.parseFloat(str);
+            return true;
+        } catch (NumberFormatException e){
+            return false;
+        }
+    }
 }
