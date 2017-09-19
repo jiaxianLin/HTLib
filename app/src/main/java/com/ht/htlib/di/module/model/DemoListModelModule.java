@@ -13,6 +13,6 @@ public class DemoListModelModule {
 
 	@Provides
 	DemoListModel providerDemoListModel(){
-		return new DemoListModel();
+		return null;
 	}
 }

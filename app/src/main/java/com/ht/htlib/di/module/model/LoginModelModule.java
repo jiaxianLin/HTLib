@@ -12,6 +12,6 @@ import dagger.Provides;
 public class LoginModelModule {
 	@Provides
 	public LoginModel provideLoginModel(){
-		return new LoginModel();
+		return null;
 	}
 }

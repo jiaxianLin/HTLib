@@ -8,7 +8,7 @@ import me.yokeyword.fragmentation.SupportFragment;
  * Created by Administrator on 2017/8/15 0015.
  */
 
-public class DemoFragmentAtivity extends BaseFragmentActivity{
+public class DemoFragmentAtivity extends BaseFragmentActivity {
 
 	@Override
 	protected SupportFragment getFragment() {
@@ -16,4 +16,8 @@ public class DemoFragmentAtivity extends BaseFragmentActivity{
 	}
 
 
+	@Override
+	protected void doOnNext(Object o) {
+
+	}
 }

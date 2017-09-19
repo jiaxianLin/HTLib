@@ -25,6 +25,11 @@ public class DemoTabActivity extends BaseTabActivity {
 	}
 
 	@Override
+	protected void doOnNext(Object o) {
+
+	}
+
+	@Override
 	public ArrayList<CustomTabEntity> getTabs() {
 		ArrayList<CustomTabEntity> list = new ArrayList<>();
 		for (String s : arr) {

@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 
 import com.ht.htlib.template.DemoTemplateActivity;
+import com.ht.htlibrary.base.RxBus;
 import com.ht.htlibrary.ui.activity.BaseActivity;
 import com.ht.htlibrary.util.BarUtils;
 
@@ -84,6 +85,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 	@Override
 	protected int getToolBarId() {
 		return 0;
+	}
+
+	@Override
+	protected void doOnNext(Object o) {
+		if(o instanceof String){
+			showNormalToast(o.toString());
+		}
 	}
 
 	@Override

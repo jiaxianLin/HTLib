@@ -1,7 +1,7 @@
 package com.ht.htlib.contract;
 
-import com.ht.htlibrary.base.BasePresenter;
 import com.ht.htlibrary.base.BaseView;
+import com.ht.htlibrary.base.IModel;
 
 /**
  * Created by Administrator on 2017/9/1 0001.
@@ -9,13 +9,11 @@ import com.ht.htlibrary.base.BaseView;
 
 public interface LoginContract {
 
-	public interface Presenter extends BasePresenter {
-
-		void login(String username, String password);
+	public interface Model extends IModel{
 
 	}
 
-	public interface View extends BaseView<Presenter> {
+	public interface View extends BaseView {
 
 		void showProgress();
 

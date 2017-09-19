@@ -7,9 +7,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.ht.htlib.contract.LoginContract;
-import com.ht.htlib.di.component.DaggerLoginPresenterCom;
-import com.ht.htlib.di.module.model.LoginModelModule;
-import com.ht.htlib.di.module.view.LoginViewModule;
 import com.ht.htlib.presenter.LoginPresenter;
 import com.ht.htlibrary.ui.activity.login.BaseLoginActivity;
 
@@ -75,11 +72,11 @@ public class DemoLoginActivity extends BaseLoginActivity implements LoginContrac
 
 	@Override
 	protected void initData() {
-		DaggerLoginPresenterCom.builder()
-				.loginModelModule(new LoginModelModule())
-				.loginViewModule(new LoginViewModule(this))
-				.build()
-				.inject(this);
+//		DaggerLoginPresenterCom.builder()
+//				.loginModelModule(new LoginModelModule())
+//				.loginViewModule(new LoginViewModule(this))
+//				.build()
+//				.inject(this);
 	}
 
 	@Override
@@ -88,7 +85,7 @@ public class DemoLoginActivity extends BaseLoginActivity implements LoginContrac
 	}
 
 	@Override
-	public void setPresenter(LoginContract.Presenter presenter) {
+	protected void doOnNext(Object o) {
 
 	}
 
@@ -102,6 +99,21 @@ public class DemoLoginActivity extends BaseLoginActivity implements LoginContrac
 		showSuccessToast("登录成功");
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
+	}
+
+	@Override
+	public void showMessage(String msg) {
+
+	}
+
+	@Override
+	public void luanchActivity(Intent intent) {
+
+	}
+
+	@Override
+	public void killMyself() {
+
 	}
 
 	@OnClick(R.id.btn_login)

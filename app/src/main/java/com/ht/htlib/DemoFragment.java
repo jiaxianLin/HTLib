@@ -22,7 +22,10 @@ public class DemoFragment extends BaseFragment {
 	}
 
 
+	@Override
+	protected void doOnNext(Object o) {
 
+	}
 
 	@Override
 	protected void initData() {

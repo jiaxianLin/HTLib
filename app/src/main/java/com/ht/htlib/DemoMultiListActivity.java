@@ -1,5 +1,6 @@
 package com.ht.htlib;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -53,6 +54,10 @@ public class DemoMultiListActivity extends BaseListActivity<MultiItemEntity> imp
 	protected void initData() {
 		super.initData();
 
+	}
+
+	@Override
+	protected void doOnNext(Object o) {
 
 	}
 
@@ -73,11 +78,6 @@ public class DemoMultiListActivity extends BaseListActivity<MultiItemEntity> imp
 
 	@Override
 	public void onLoadMoreRequested() {
-
-	}
-
-	@Override
-	public void setPresenter(DemoListContract.Presenter presenter) {
 
 	}
 
@@ -107,5 +107,30 @@ public class DemoMultiListActivity extends BaseListActivity<MultiItemEntity> imp
 			res.add(lv0);
 		}
 		return res;
+	}
+
+	@Override
+	public void showProgress() {
+
+	}
+
+	@Override
+	public void dismissProgress() {
+
+	}
+
+	@Override
+	public void showMessage(String msg) {
+
+	}
+
+	@Override
+	public void luanchActivity(Intent intent) {
+
+	}
+
+	@Override
+	public void killMyself() {
+
 	}
 }

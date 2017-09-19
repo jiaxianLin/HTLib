@@ -1,10 +1,13 @@
 package com.ht.htlib.model;
 
 import com.ht.htlib.bean.ListData;
+import com.ht.htlib.contract.DemoListContract;
 import com.ht.htlib.net.NetClient;
+import com.ht.htlibrary.base.BaseModel;
+import com.ht.htlibrary.base.IRepositoryManager;
 import com.ht.htlibrary.net.BaseResponse;
 
-import rx.Subscriber;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -12,41 +15,26 @@ import rx.schedulers.Schedulers;
  * Created by Administrator on 2017/9/7 0007.
  */
 
-public class DemoListModel {
+public class DemoListModel extends BaseModel implements DemoListContract.Model {
 
-	public interface DataCallBack<T> {
-		void onstart();
-
-		void onSuccess(T result);
-
-		void onFailure(Throwable e);
-
-		void onFinish();
+	public DemoListModel() {
 	}
 
-	public void loadData(String rp, String page, final DataCallBack callBack) {
+	public DemoListModel(IRepositoryManager repositoryManager) {
+		super(repositoryManager);
+	}
 
-		NetClient.getTestApi()
+	@Override
+	public void onDestroy() {
+
+	}
+
+	@Override
+	public Observable<BaseResponse<ListData>> loadData(String rp, String page) {
+		return NetClient.getTestApi()
 				.getPrisoner(rp, page)
 				.subscribeOn(Schedulers.io())
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(new Subscriber<BaseResponse<ListData>>() {
-					@Override
-					public void onCompleted() {
-						callBack.onFinish();
-					}
-
-					@Override
-					public void onError(Throwable e) {
-						callBack.onFailure(e);
-					}
-
-					@Override
-					public void onNext(BaseResponse<ListData> response) {
-						callBack.onSuccess(response.getResult());
-					}
-				});
+				.observeOn(AndroidSchedulers.mainThread());
 	}
-
 
 }
