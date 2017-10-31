@@ -57,6 +57,8 @@ public abstract class BaseListActivity<T> extends BaseActivity implements SwipeR
 		mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.base_refreshlayout);
 		if (isOpenRefresh()) {
 			mRefreshLayout.setOnRefreshListener(this);
+		} else {
+			mRefreshLayout.setEnabled(false);
 		}
 	}
 

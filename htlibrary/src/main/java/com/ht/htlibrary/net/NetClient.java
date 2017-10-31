@@ -16,7 +16,6 @@ import okhttp3.Response;
 import okio.Buffer;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -56,31 +55,6 @@ public class NetClient {
 					.build();
 		}
 	}
-
-
-//	/**
-//	 * 考虑到多个baseurl的情况
-//	 * @param BaseUrl
-//	 */
-//	public NetClient (String BaseUrl){
-//		//创建okHttpClient
-//		if (null == mRetrofit) {
-//			OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
-//			builder.readTimeout(DEFAULT_TIME, TimeUnit.SECONDS);
-//			builder.connectTimeout(DEFAULT_TIME, TimeUnit.SECONDS);
-//
-//			//设置拦截器
-////			builder.addInterceptor(new BasicParamsInterceptor.Builder().addParamsMap(getCommonMap()).build());
-////			builder.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
-//			OkHttpClient okHttpClient = builder.build();
-//			mRetrofit = new Retrofit.Builder()
-//					.baseUrl(BaseUrl)
-//					.client(okHttpClient)
-//					.addConverterFactory(GsonConverterFactory.create())
-//					.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-//					.build();
-//		}
-//	}
 
 	protected static final Interceptor sLoggingInterceptor = new Interceptor() {
 		@Override

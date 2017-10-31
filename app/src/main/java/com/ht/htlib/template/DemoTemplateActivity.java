@@ -44,7 +44,13 @@ public class DemoTemplateActivity extends BaseTempLateActivity implements View.O
 	}
 
 	@Override
-	public void onClick(View v) {
+	protected void doOnNext(Object o) {
 
+	}
+
+	@Override
+	public void onClick(View v) {
+		mAdapter.notifyDataSetChanged();
+		mAdapter.getValueMap();
 	}
 }

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public abstract class BaseListFragment<T> extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.RequestLoadMoreListener, IOKLoad {
 
-	RecyclerView mRecyclerView;
+	protected RecyclerView mRecyclerView;
 
 	protected RecyclerView.LayoutManager manager;
 

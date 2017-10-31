@@ -1,5 +1,6 @@
 package com.ht.htlibrary.ui.activity;
 
+import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ public abstract class BaseActivity extends SupportActivity {
 	private Toast mToast;
 
 	protected Subscription subscription;
+
+	protected ProgressDialog mProgressDialog;
 
 
 	@Override
@@ -84,6 +87,10 @@ public abstract class BaseActivity extends SupportActivity {
 		}
 	}
 
+	/**
+	 * 成功toast
+	 * @param msg
+	 */
 	protected void showSuccessToast(String msg){
 		if(mToast != null){
 			mToast.cancel();
@@ -142,7 +149,30 @@ public abstract class BaseActivity extends SupportActivity {
 				.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
 	}
 
+	/**
+	 * 显示进度条
+	 * @param msg 进度条文字提示
+	 */
+	protected void showProgressDialog(String msg){
+		if(mProgressDialog == null){
+			mProgressDialog = new ProgressDialog(this);
+		}
+		mProgressDialog.setTitle(msg);
+		mProgressDialog.show();
+	}
 
+	/**
+	 * 隐藏进度条
+	 */
+	protected void dismissProgressDialog(){
+		if(mProgressDialog != null){
+			mProgressDialog.dismiss();
+		}
+	}
+
+	/**
+	 * 页面销毁时取消订阅
+	 */
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

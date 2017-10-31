@@ -1,20 +1,19 @@
 package com.ht.htlibrary.template;
 
+import android.support.annotation.IntRange;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.util.SparseArray;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
-import com.ht.htlibrary.R;
 import com.ht.htlibrary.template.bean.BaseTemplate;
-import com.ht.htlibrary.template.bean.SectionTemplate;
 import com.ht.htlibrary.template.bean.TemplateList;
+import com.ht.htlibrary.template.widget.BaseTemplateView;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,12 +24,36 @@ public class TemplateAdapter extends BaseQuickAdapter<BaseTemplate, BaseViewHold
 
 	TemplateList templateList;
 
-	public TemplateAdapter(@Nullable List<BaseTemplate> data) {
+	Map<String, String> valueMap;
+
+	private SparseArray<BaseTemplateView> views;
+
+	public TemplateAdapter(@Nullable TemplateList data) {
 		super(Template.getInputLayout(), data);
-		templateList = new TemplateList();
+//		templateList = new TemplateList();
 
-		templateList.addAll(data);
+		templateList = data;
+		valueMap = new HashMap<>();
 
+		views = new SparseArray<>();
+
+
+	}
+
+	@Override
+	protected View getItemView(@LayoutRes int layoutResId, ViewGroup parent) {
+		return super.getItemView(layoutResId, parent);
+	}
+
+	@Override
+	public int getItemViewType(int position) {
+		return position;
+	}
+
+	@Nullable
+	@Override
+	public BaseTemplate getItem(@IntRange(from = 0L) int position) {
+		return templateList.get(position);
 	}
 
 	public TemplateList getTemplateList() {
@@ -38,31 +61,54 @@ public class TemplateAdapter extends BaseQuickAdapter<BaseTemplate, BaseViewHold
 	}
 
 	@Override
-	protected void convert(BaseViewHolder helper, BaseTemplate item) {
-		TextView tv_label = helper.getView(R.id.template_label);
-		EditText et_value = helper.getView(R.id.template_value);
+	protected void convert(final BaseViewHolder helper, final BaseTemplate item) {
 
-		tv_label.setText(item.label);
-		et_value.setText(item.initVlaue);
+//		if(item instanceof SectionTemplate){
+//			et_value.setVisibility(View.GONE);
+//			helper.itemView.setVisibility(View.GONE);
+//		} else {
+//			et_value.setVisibility(View.VISIBLE);
+//			helper.itemView.setVisibility(View.VISIBLE);
+//		}
 
-		if(!TextUtils.isEmpty(item.initVlaue)){
-			et_value.setText(item.initVlaue);
-		}
-		if(item instanceof SectionTemplate){
-			et_value.setVisibility(View.GONE);
-			helper.itemView.setVisibility(View.GONE);
-		} else {
-			et_value.setVisibility(View.VISIBLE);
+		if(item.isShow(getValueMap())){
 			helper.itemView.setVisibility(View.VISIBLE);
+			helper.itemView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+
+				}
+			});
+		} else {
+			helper.itemView.setVisibility(View.GONE);
 		}
+
+		BaseTemplateView view = (BaseTemplateView) helper.itemView;
+		views.put(helper.getAdapterPosition(), view);
+		view.initView(valueMap, item.value, item);
+
+
+//		et_value.addTextChangedListener(new TextWatcher() {
+//			@Override
+//			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//			}
+//
+//			@Override
+//			public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//			}
+//
+//			@Override
+//			public void afterTextChanged(Editable s) {
+//				item.value = s.toString();
+//				valueMap.put(templateList.get(helper.getAdapterPosition()).name, s.toString());
+//			}
+//		});
 
 	}
 
 	public Map<String, String> getValueMap(){
-		Map<String, String> map = new HashMap<>();
-		for (BaseTemplate template : getData()) {
-			map.put(template.name, template.value);
-		}
-		return map;
+		return valueMap;
 	}
 }

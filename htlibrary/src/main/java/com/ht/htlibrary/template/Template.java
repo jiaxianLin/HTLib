@@ -38,4 +38,8 @@ public class Template {
 		return INPUT_LAYOUT;
 	}
 
+	public static int getBaseTemplateLayout(){
+		return INPUT_LAYOUT;
+	}
+
 }

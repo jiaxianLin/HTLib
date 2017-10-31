@@ -11,5 +11,10 @@
     <item name="base_tab" type="id"/>
     <item name="tab_vp" type="id"/>
 
+    <!-- template -->
+    <item name="template_label" type="id"/>
+    <item name="template_text" type="id"/>
+    <item name="template_edit" type="id"/>
+
 
 </resources>
